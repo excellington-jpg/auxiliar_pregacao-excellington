@@ -1,0 +1,447 @@
+﻿
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excellington Auxiliar de Pregação</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bibleGreen: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            soft: '#e2f0d9',
+                            darkBg: '#0f1f14'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-[#e2f0d9] dark:bg-[#0f1f14] text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300 flex flex-col overflow-hidden">
+
+    <div id="customModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full shadow-2xl border border-green-200 dark:border-green-900">
+            <h3 id="modalTitle" class="text-lg font-bold text-green-800 dark:text-green-300 mb-2">Aviso</h3>
+            <p id="modalMessage" class="text-gray-600 dark:text-gray-300 mb-4 text-sm"></p>
+            <div class="flex justify-end space-x-2">
+                <button onclick="closeModal()" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg text-sm font-medium transition">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <header class="bg-green-800 dark:bg-green-950 text-white px-4 py-3 shadow-md flex items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="bg-white/10 p-2 rounded-lg">
+                <i class="fa-solid fa-note-sticky text-xl text-green-200"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">Excellington Auxiliar de Pregação</h1>
+                <p class="text-xs text-green-200">Gerenciador de Mensagens e Slides (Offline Ready)</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+            <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-green-700 hover:bg-green-600 transition text-sm flex items-center space-x-1" title="Alternar Visão Noturna/Normal">
+                <i id="themeIcon" class="fa-solid fa-moon"></i>
+                <span class="hidden sm:inline text-xs" id="themeText">Noturno</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col overflow-hidden relative">
+        
+        <section class="flex-1 flex flex-col overflow-hidden absolute inset-0 bg-[#e2f0d9] dark:bg-[#0f1f14]">
+            <div class="bg-green-700/10 dark:bg-green-900/20 p-3 border-b border-green-300 dark:border-green-900 flex flex-wrap items-center justify-between gap-2 shrink-0">
+                <div class="flex items-center space-x-2 flex-1 max-w-md">
+                    <input type="text" id="msgTitle" placeholder="Título da Mensagem / Pregação" class="w-full bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded px-3 py-1.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-green-600 shadow-sm" oninput="updateCurrentMeta()">
+                </div>
+                <div class="flex items-center space-x-1.5 flex-wrap gap-1">
+                    <button onclick="saveCurrentMessage()" class="px-3 py-1.5 bg-green-700 hover:bg-green-800 text-white rounded text-xs font-bold transition flex items-center space-x-1 shadow">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Salvar</span>
+                    </button>
+                    <button onclick="openNewMessageModal()" class="px-2.5 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-medium transition shadow-sm">
+                        <i class="fa-solid fa-file-circle-plus mr-1"></i> Novo
+                    </button>
+                    <button onclick="openSavedMessagesModal()" class="px-2.5 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-medium transition shadow-sm">
+                        <i class="fa-solid fa-folder-open mr-1"></i> Salvas (<span id="savedCount">0</span>)
+                    </button>
+                    <button onclick="exportCurrentMessage()" class="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded text-xs font-medium transition shadow-sm" title="Exportar JSON">
+                        <i class="fa-solid fa-file-export mr-1"></i> Exportar
+                    </button>
+                    <button onclick="triggerImportMessage()" class="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded text-xs font-medium transition shadow-sm" title="Importar JSON">
+                        <i class="fa-solid fa-file-import mr-1"></i> Importar
+                    </button>
+                    <input type="file" id="importFile" class="hidden" accept=".json" onchange="importMessageFile(event)">
+                </div>
+            </div>
+
+            <div id="slideMainContainer" class="flex-1 flex flex-col p-4 overflow-hidden max-w-4xl w-full mx-auto transition-all">
+                <div id="slideToolbar" class="flex items-center justify-between mb-3 bg-green-700/10 dark:bg-green-900/20 p-2.5 rounded-lg shrink-0 border border-green-200 dark:border-green-900">
+                    <div class="flex items-center space-x-2" id="navButtonsContainer">
+                        <button onclick="prevSlide()" id="prevBtn" class="px-3 py-1.5 bg-green-700 hover:bg-green-800 text-white rounded text-xs font-bold transition flex items-center space-x-1 shadow">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span class="hidden sm:inline">Anterior</span>
+                        </button>
+                        <span id="slideIndicator" class="text-xs font-bold px-2 text-green-900 dark:text-green-300">Slide 1 de 5</span>
+                        <button onclick="nextSlide()" id="nextBtn" class="px-3 py-1.5 bg-green-700 hover:bg-green-800 text-white rounded text-xs font-bold transition flex items-center space-x-1 shadow">
+                            <span class="hidden sm:inline">Próximo</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center space-x-2 flex-wrap gap-1">
+                        <button onclick="toggleFullScreenSlide()" id="fsButton" class="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold transition flex items-center space-x-1" title="Tela Cheia">
+                            <i class="fa-solid fa-expand"></i>
+                            <span class="hidden sm:inline">Tela Cheia</span>
+                        </button>
+                        <div id="editControlsGroup" class="flex items-center space-x-2 flex-wrap gap-1">
+                            <div class="h-4 w-px bg-green-300 dark:bg-green-700 mx-1"></div>
+                            <button onclick="addSlide()" class="px-2.5 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-medium transition" title="Adicionar Slide">
+                                <i class="fa-solid fa-plus mr-1"></i> Slide
+                            </button>
+                            <button onclick="removeCurrentSlide()" class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-medium transition" title="Excluir Slide">
+                                <i class="fa-solid fa-trash mr-1"></i> Excluir
+                            </button>
+                            <div class="h-4 w-px bg-green-300 dark:bg-green-700 mx-1"></div>
+                            <span class="text-xs font-semibold text-green-800 dark:text-green-300">Fonte:</span>
+                            <button onclick="adjustSlideFontSize(-1)" class="w-6 h-6 bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded flex items-center justify-center text-xs font-bold">-</button>
+                            <span id="slideFontSizeDisplay" class="text-xs w-6 text-center font-bold">20px</span>
+                            <button onclick="adjustSlideFontSize(1)" class="w-6 h-6 bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded flex items-center justify-center text-xs font-bold">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 flex flex-col bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded-xl shadow-lg p-4 overflow-hidden relative">
+                    <div class="flex justify-between items-center mb-2 pb-2 border-b border-green-100 dark:border-gray-700">
+                        <input type="text" id="slideTitleInput" placeholder="Título do Slide" class="w-full bg-transparent font-bold text-base text-green-800 dark:text-green-300 focus:outline-none" oninput="updateSlideContent()">
+                    </div>
+                    <textarea id="slideBodyInput" placeholder="Tópicos e anotações para a pregação..." class="flex-1 w-full bg-transparent resize-none focus:outline-none text-gray-800 dark:text-gray-200 leading-relaxed p-1" oninput="updateSlideContent()"></textarea>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="savedModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-lg w-full shadow-2xl border border-green-200 dark:border-green-900 flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-bold text-green-800 dark:text-green-300"><i class="fa-solid fa-folder-open mr-2"></i> Mensagens Salvas no Dispositivo</h3>
+                <button onclick="closeSavedModal()" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="savedMessagesList" class="flex-1 overflow-y-auto space-y-2 mb-4 pr-1">
+                </div>
+            <div class="flex justify-end">
+                <button onclick="closeSavedModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlideFontSize = 20;
+        let isDarkMode = false;
+        let isFullScreen = false;
+
+        let currentMessage = {
+            id: 'msg_' + Date.now(),
+            title: 'Mensagem Sem Título',
+            slides: [
+                { title: 'Introdução', body: 'Insira aqui os pontos principais da introdução...' },
+                { title: 'Desenvolvimento 1', body: 'Insira o primeiro tópico central...' },
+                { title: 'Desenvolvimento 2', body: 'Insira o segundo tópico central...' },
+                { title: 'Desenvolvimento 3', body: 'Insira o terceiro tópico central...' },
+                { title: 'Conclusão e Apelo', body: 'Conclusão da mensagem e direcionamento espiritual...' }
+            ]
+        };
+        let currentSlideIndex = 0;
+
+        window.onload = function() {
+            renderSlide();
+            updateSavedCount();
+        };
+
+        function toggleFullScreenSlide() {
+            isFullScreen = !isFullScreen;
+            const container = document.getElementById('slideMainContainer');
+            const fsButton = document.getElementById('fsButton');
+            const editControlsGroup = document.getElementById('editControlsGroup');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (isFullScreen) {
+                container.classList.remove('max-w-4xl', 'mx-auto', 'p-4');
+                container.classList.add('fixed', 'inset-0', 'z-40', 'bg-[#e2f0d9]', 'dark:bg-[#0f1f14]', 'p-8');
+                fsButton.innerHTML = '<i class="fa-solid fa-compress"></i><span class="hidden sm:inline">Normal</span>';
+                editControlsGroup.classList.add('hidden');
+                
+                prevBtn.classList.remove('px-3', 'py-1.5', 'text-xs');
+                prevBtn.classList.add('px-6', 'py-3', 'text-base');
+                nextBtn.classList.remove('px-3', 'py-1.5', 'text-xs');
+                nextBtn.classList.add('px-6', 'py-3', 'text-base');
+            } else {
+                container.classList.remove('fixed', 'inset-0', 'z-40', 'bg-[#e2f0d9]', 'dark:bg-[#0f1f14]', 'p-8');
+                container.classList.add('max-w-4xl', 'mx-auto', 'p-4');
+                fsButton.innerHTML = '<i class="fa-solid fa-expand"></i><span class="hidden sm:inline">Tela Cheia</span>';
+                editControlsGroup.classList.remove('hidden');
+
+                prevBtn.classList.remove('px-6', 'py-3', 'text-base');
+                prevBtn.classList.add('px-3', 'py-1.5', 'text-xs');
+                nextBtn.classList.remove('px-6', 'py-3', 'text-base');
+                nextBtn.classList.add('px-3', 'py-1.5', 'text-xs');
+            }
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            const htmlEl = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+
+            if (isDarkMode) {
+                htmlEl.classList.add('dark');
+                themeIcon.className = "fa-solid fa-sun";
+                themeText.textContent = "Normal";
+            } else {
+                htmlEl.classList.remove('dark');
+                themeIcon.className = "fa-solid fa-moon";
+                themeText.textContent = "Noturno";
+            }
+        }
+
+        function renderSlide() {
+            if (!currentMessage.slides || currentMessage.slides.length === 0) {
+                currentMessage.slides = [{ title: '', body: '' }];
+            }
+            if (currentSlideIndex >= currentMessage.slides.length) {
+                currentSlideIndex = currentMessage.slides.length - 1;
+            }
+            if (currentSlideIndex < 0) currentSlideIndex = 0;
+
+            const slide = currentMessage.slides[currentSlideIndex];
+            document.getElementById('msgTitle').value = currentMessage.title || '';
+            document.getElementById('slideTitleInput').value = slide.title || '';
+            document.getElementById('slideBodyInput').value = slide.body || '';
+            document.getElementById('slideBodyInput').style.fontSize = currentSlideFontSize + 'px';
+            document.getElementById('slideFontSizeDisplay').textContent = currentSlideFontSize + 'px';
+            document.getElementById('slideIndicator').textContent = `Slide ${currentSlideIndex + 1} de ${currentMessage.slides.length}`;
+        }
+
+        function updateCurrentMeta() {
+            currentMessage.title = document.getElementById('msgTitle').value;
+        }
+
+        function updateSlideContent() {
+            if (currentMessage.slides[currentSlideIndex]) {
+                currentMessage.slides[currentSlideIndex].title = document.getElementById('slideTitleInput').value;
+                currentMessage.slides[currentSlideIndex].body = document.getElementById('slideBodyInput').value;
+            }
+        }
+
+        function nextSlide() {
+            updateSlideContent();
+            if (currentSlideIndex < currentMessage.slides.length - 1) {
+                currentSlideIndex++;
+                renderSlide();
+            }
+        }
+
+        function prevSlide() {
+            updateSlideContent();
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                renderSlide();
+            }
+        }
+
+        function addSlide() {
+            updateSlideContent();
+            const newIndex = Math.max(0, currentMessage.slides.length - 1);
+            currentMessage.slides.splice(newIndex, 0, { title: 'Novo Tópico', body: 'Escreva as anotações...' });
+            currentSlideIndex = newIndex;
+            renderSlide();
+        }
+
+        function removeCurrentSlide() {
+            if (currentMessage.slides.length <= 1) {
+                showModal("Aviso", "A mensagem precisa ter pelo menos um slide.");
+                return;
+            }
+            currentMessage.slides.splice(currentSlideIndex, 1);
+            if (currentSlideIndex >= currentMessage.slides.length) {
+                currentSlideIndex = currentMessage.slides.length - 1;
+            }
+            renderSlide();
+        }
+
+        function adjustSlideFontSize(delta) {
+            currentSlideFontSize = Math.max(14, Math.min(40, currentSlideFontSize + delta));
+            document.getElementById('slideBodyInput').style.fontSize = currentSlideFontSize + 'px';
+            document.getElementById('slideFontSizeDisplay').textContent = currentSlideFontSize + 'px';
+        }
+
+        function getSavedMessages() {
+            try {
+                const data = localStorage.getItem('excellington_msgs');
+                return data ? JSON.parse(data) : [];
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function saveCurrentMessage() {
+            updateSlideContent();
+            if (!currentMessage.title.trim()) {
+                currentMessage.title = "Mensagem sem título";
+            }
+
+            let saved = getSavedMessages();
+            const existingIndex = saved.findIndex(m => m.id === currentMessage.id);
+            if (existingIndex >= 0) {
+                saved[existingIndex] = currentMessage;
+            } else {
+                saved.push(currentMessage);
+            }
+
+            localStorage.setItem('excellington_msgs', JSON.stringify(saved));
+            updateSavedCount();
+            showModal("Salvo Offline", "Mensagem armazenada com sucesso no dispositivo!");
+        }
+
+        function updateSavedCount() {
+            const saved = getSavedMessages();
+            document.getElementById('savedCount').textContent = saved.length;
+        }
+
+        function openNewMessageModal() {
+            currentMessage = {
+                id: 'msg_' + Date.now(),
+                title: 'Nova Mensagem',
+                slides: [
+                    { title: 'Introdução', body: 'Insira a introdução...' },
+                    { title: 'Desenvolvimento 1', body: 'Primeiro ponto...' },
+                    { title: 'Desenvolvimento 2', body: 'Segundo ponto...' },
+                    { title: 'Desenvolvimento 3', body: 'Terceiro ponto...' },
+                    { title: 'Conclusão e Apelo', body: 'Conclusão e apelo...' }
+                ]
+            };
+            currentSlideIndex = 0;
+            renderSlide();
+            showModal("Nova Mensagem", "Criada nova estrutura com 5 slides.");
+        }
+
+        function openSavedMessagesModal() {
+            const saved = getSavedMessages();
+            const listEl = document.getElementById('savedMessagesList');
+            listEl.innerHTML = '';
+
+            if (saved.length === 0) {
+                listEl.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">Nenhuma mensagem salva.</p>';
+            } else {
+                saved.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-3 bg-green-50 dark:bg-gray-700/50 rounded-lg border border-green-200 dark:border-green-900";
+                    div.innerHTML = `
+                        <div>
+                            <h4 class="font-bold text-sm text-green-900 dark:text-green-300">${msg.title || 'Sem Título'}</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">${msg.slides ? msg.slides.length : 0} slide(s)</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="loadSavedMessage('${msg.id}')" class="px-3 py-1 bg-green-700 hover:bg-green-800 text-white rounded text-xs font-medium transition">Carregar</button>
+                            <button onclick="deleteSavedMessage('${msg.id}')" class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-medium transition"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    `;
+                    listEl.appendChild(div);
+                });
+            }
+            document.getElementById('savedModal').classList.remove('hidden');
+        }
+
+        function closeSavedModal() {
+            document.getElementById('savedModal').classList.add('hidden');
+        }
+
+        function loadSavedMessage(id) {
+            const saved = getSavedMessages();
+            const found = saved.find(m => m.id === id);
+            if (found) {
+                currentMessage = JSON.parse(JSON.stringify(found));
+                currentSlideIndex = 0;
+                renderSlide();
+                closeSavedModal();
+                showModal("Carregada", `Mensagem "${currentMessage.title}" carregada!`);
+            }
+        }
+
+        function deleteSavedMessage(id) {
+            let saved = getSavedMessages();
+            saved = saved.filter(m => m.id !== id);
+            localStorage.setItem('excellington_msgs', JSON.stringify(saved));
+            updateSavedCount();
+            openSavedMessagesModal();
+        }
+
+        function exportCurrentMessage() {
+            updateSlideContent();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentMessage, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", (currentMessage.title || 'pregação').replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function triggerImportMessage() {
+            document.getElementById('importFile').click();
+        }
+
+        function importMessageFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.slides && Array.isArray(imported.slides)) {
+                        currentMessage = imported;
+                        currentMessage.id = 'msg_' + Date.now();
+                        currentSlideIndex = 0;
+                        renderSlide();
+                        showModal("Importação Concluída", `Mensagem "${currentMessage.title}" importada!`);
+                    } else {
+                        showModal("Erro de Formato", "Arquivo inválido.");
+                    }
+                } catch (err) {
+                    showModal("Erro", "Falha ao ler arquivo JSON.");
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function showModal(title, message) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+```
