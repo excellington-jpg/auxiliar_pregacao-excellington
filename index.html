@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
 <head>
@@ -32,9 +31,6 @@
 </head>
 <body class="h-full bg-[#e2f0d9] dark:bg-[#0f1f14] text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300 flex flex-col overflow-hidden">
 
-
-
-    
     <div id="customModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full shadow-2xl border border-green-200 dark:border-green-900">
             <h3 id="modalTitle" class="text-lg font-bold text-green-800 dark:text-green-300 mb-2">Aviso</h3>
@@ -46,10 +42,6 @@
     </div>
 
     <header class="bg-green-800 dark:bg-green-950 text-white px-4 py-3 shadow-md flex items-center justify-between gap-3 shrink-0">
-
-
-
-        
         <div class="flex items-center space-x-3">
             <div class="bg-white/10 p-2 rounded-lg">
                 <i class="fa-solid fa-note-sticky text-xl text-green-200"></i>
@@ -60,48 +52,35 @@
             </div>
         </div>
 
-    </header>
-
-    <header
-
         <div class="flex items-center gap-2 flex-wrap justify-center">
- 
-
             <div class="flex items-center gap-2 mt-0.5">
-                        <span id="user-display-tag" class="text-xs font-semibold text-indigo-300 hidden"></span>
-      <button onclick="openUsernameModal()" class="text-[10px] text-indigo-400 hover:text-indigo-300 underline hidden" id="edit-user-btn">Editar</button>
-     
+                <span id="user-display-tag" class="text-xs font-semibold text-indigo-300 hidden"></span>
+                <button onclick="openUsernameModal()" class="text-[10px] text-indigo-400 hover:text-indigo-300 underline hidden" id="edit-user-btn">Editar</button>
             </div>
 
-                <!-- Ícone Termos de Uso -->
-                     <button onclick="toggleTermsModal()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 hover:text-indigo-300 p-2 rounded-lg border border-slate-700 transition-all" title="Termos de Uso e Responsabilidade">
-        <i data-lucide="shield-check" class="w-4 h-4"></i>
-                     </button>
-                <!-- Ícone Ativação Pix -->
-                <button onclick="toggleActivationModal()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-emerald-400 rounded-xl text-xs font-medium border border-slate-800 transition" title="Renovação Mensal Pix">
-                    <i class="fa-solid fa-key"></i>
-                </button>
-
+            <!-- Ícone Termos de Uso -->
+            <button onclick="toggleTermsModal()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 hover:text-indigo-300 p-2 rounded-lg border border-slate-700 transition-all" title="Termos de Uso e Responsabilidade">
+                <i class="fa-solid fa-shield-check w-4 h-4"></i>
+            </button>
             
-<!-- Botão Sair -->
-                <button onclick="exitApp()" class="px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl text-xs font-semibold transition border border-rose-500/20 flex items-center gap-1.5" title="Sair do Aplicativo">
-                    <i class="fa-solid fa-right-from-bracket"></i> Sair
-                </button>
+            <!-- Ícone Ativação Pix -->
+            <button onclick="openActivationModal(false)" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-emerald-400 rounded-xl text-xs font-medium border border-slate-800 transition" title="Renovação Mensal Pix">
+                <i class="fa-solid fa-key"></i> Ativação
+            </button>
+
+            <!-- Botão Sair -->
+            <button onclick="exitApp()" class="px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl text-xs font-semibold transition border border-rose-500/20 flex items-center gap-1.5" title="Sair do Aplicativo">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </button>
             
             <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-green-700 hover:bg-green-600 transition text-sm flex items-center space-x-1" title="Alternar Visão Noturna/Normal">
                 <i id="themeIcon" class="fa-solid fa-moon"></i>
                 <span class="hidden sm:inline text-xs" id="themeText">Noturno</span>
             </button>
         </div>
-
-            
-
-
-        
     </header>
 
     <main class="flex-1 flex flex-col overflow-hidden relative">
-        
         <section class="flex-1 flex flex-col overflow-hidden absolute inset-0 bg-[#e2f0d9] dark:bg-[#0f1f14]">
             <div class="bg-green-700/10 dark:bg-green-900/20 p-3 border-b border-green-300 dark:border-green-900 flex flex-wrap items-center justify-between gap-2 shrink-0">
                 <div class="flex items-center space-x-2 flex-1 max-w-md">
@@ -180,16 +159,14 @@
                 <h3 class="text-lg font-bold text-green-800 dark:text-green-300"><i class="fa-solid fa-folder-open mr-2"></i> Mensagens Salvas no Dispositivo</h3>
                 <button onclick="closeSavedModal()" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div id="savedMessagesList" class="flex-1 overflow-y-auto space-y-2 mb-4 pr-1">
-                </div>
+            <div id="savedMessagesList" class="flex-1 overflow-y-auto space-y-2 mb-4 pr-1"></div>
             <div class="flex justify-end">
                 <button onclick="closeSavedModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition">Fechar</button>
             </div>
         </div>
     </div>
 
-
-        <!-- MODAL: Cadastro de Usuário -->
+    <!-- MODAL: Cadastro de Usuário -->
     <div id="username-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full flex flex-col shadow-2xl">
             <h3 class="text-lg font-bold mb-1 text-white flex items-center gap-2">
@@ -217,7 +194,7 @@
                 <h3 class="font-bold text-emerald-400 text-base flex items-center gap-2">
                     <i class="fa-solid fa-heart text-emerald-500"></i> Renovação Mensal Pix
                 </h3>
-                <button onclick="toggleActivationModal()" class="text-slate-400 hover:text-white p-1">
+                <button id="activation-close-btn" onclick="toggleActivationModal()" class="text-slate-400 hover:text-white p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
@@ -247,7 +224,7 @@
             </div>
 
             <div class="space-y-2 pt-1 border-t border-slate-800">
-                <label class="block text-xs font-medium text-slate-300">Código de Ativação (10 dígitos):</label>
+                <label class="block text-xs font-medium text-slate-300">Código de Ativação (Gerado pelo Admin):</label>
                 <input type="text" id="activation-code-input" placeholder="Digite o código de liberação" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 text-white text-xs rounded-lg p-2.5 font-mono outline-none">
                 <button onclick="validateActivationCode()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2.5 rounded-lg transition-all shadow-md shadow-indigo-600/30">
                     Ativar Aplicativo
@@ -291,13 +268,11 @@
     </div>
 
     <script>
-
-
-
-                // --- CONSTANTES DE ARMAZENAMENTO E LICENCIAMENTO ---
+        // --- CONSTANTES DE ARMAZENAMENTO E LICENCIAMENTO ---
         const USERNAME_KEY = 'excellington_auxiliar_pregacao_username_v1';
         const EXPIRATION_KEY = 'excellington_auxiliar_pregacao_expiration_v1';
         const PIX_KEY = '16250510850';
+        let isAppForcedBlocked = false;
 
         window.addEventListener('DOMContentLoaded', () => {
             checkAppAccess();
@@ -313,7 +288,6 @@
                 return;
             }
 
-            // Exibir nome do usuário abaixo do subtítulo
             const userTag = document.getElementById('user-display-tag');
             const editBtn = document.getElementById('edit-user-btn');
             userTag.textContent = `• Usuário: ${username}`;
@@ -324,7 +298,7 @@
             const now = Date.now();
 
             if (!expiration || now > parseInt(expiration)) {
-                toggleActivationModal();
+                openActivationModal(true); // Bloqueio forçado por expiração
             }
         }
 
@@ -356,10 +330,30 @@
             checkAppAccess();
         }
 
+        function openActivationModal(forced = false) {
+            isAppForcedBlocked = forced;
+            const modal = document.getElementById('activation-modal');
+            const closeBtn = document.getElementById('activation-close-btn');
+            
+            if (closeBtn) {
+                if (forced) {
+                    closeBtn.classList.add('hidden');
+                } else {
+                    closeBtn.classList.remove('hidden');
+                }
+            }
+            modal.classList.remove('hidden');
+            updateActivationInfo();
+        }
+
         function toggleActivationModal() {
+            if (isAppForcedBlocked) return;
             const modal = document.getElementById('activation-modal');
             modal.classList.toggle('hidden');
             if (!modal.classList.contains('hidden')) {
+                isAppForcedBlocked = false;
+                const closeBtn = document.getElementById('activation-close-btn');
+                if (closeBtn) closeBtn.classList.remove('hidden');
                 updateActivationInfo();
             }
         }
@@ -398,32 +392,44 @@
             const cleanName = username.replace(/\s+/g, '');
             const charCount = cleanName.length;
 
-            const targetDate = new Date();
+            const currentExp = localStorage.getItem(EXPIRATION_KEY);
+            const baseDate = (currentExp && parseInt(currentExp) > Date.now()) ? new Date(parseInt(currentExp)) : new Date();
+            
+            const targetDate = new Date(baseDate);
             targetDate.setDate(targetDate.getDate() + 30);
+
             const day = targetDate.getDate();
             const month = targetDate.getMonth() + 1;
             const year = targetDate.getFullYear();
 
             const sum = charCount + day + month + year;
-            const expectedCode = Math.pow(sum, 3).toString().padStart(10, '0');
+            const expectedCode = String(Math.pow(sum, 3)); // Alinhado com o gerador (sem padStart)
 
             if (codeInput === expectedCode || codeInput === "1234567890") {
                 localStorage.setItem(EXPIRATION_KEY, targetDate.getTime().toString());
+                isAppForcedBlocked = false;
                 document.getElementById('activation-modal').classList.add('hidden');
                 alert("Aplicativo ativado com sucesso por mais 30 dias!");
                 checkAppAccess();
             } else {
-                alert("Código de ativação inválido. Verifique o comprovante enviado para excellington@gmail.com.");
+                alert("Código de ativação inválido. Verifique os dados informados.");
             }
+        }
+
+        function checkAccessBeforeAction() {
+            const expiration = localStorage.getItem(EXPIRATION_KEY);
+            const now = Date.now();
+            if (!expiration || now > parseInt(expiration)) {
+                openActivationModal(true);
+                return false;
+            }
+            return true;
         }
 
         function toggleTermsModal() {
             document.getElementById('terms-modal').classList.toggle('hidden');
         }
 
-
-
-        
         let currentSlideFontSize = 20;
         let isDarkMode = false;
         let isFullScreen = false;
@@ -454,6 +460,7 @@
         };
 
         function toggleFullScreenSlide() {
+            if (!checkAccessBeforeAction()) return;
             isFullScreen = !isFullScreen;
             const container = document.getElementById('slideMainContainer');
             const fsButton = document.getElementById('fsButton');
@@ -531,6 +538,7 @@
         }
 
         function nextSlide() {
+            if (!checkAccessBeforeAction()) return;
             updateSlideContent();
             if (currentSlideIndex < currentMessage.slides.length - 1) {
                 currentSlideIndex++;
@@ -539,6 +547,7 @@
         }
 
         function prevSlide() {
+            if (!checkAccessBeforeAction()) return;
             updateSlideContent();
             if (currentSlideIndex > 0) {
                 currentSlideIndex--;
@@ -547,6 +556,7 @@
         }
 
         function addSlide() {
+            if (!checkAccessBeforeAction()) return;
             updateSlideContent();
             const newIndex = Math.max(0, currentMessage.slides.length - 1);
             currentMessage.slides.splice(newIndex, 0, { title: 'Novo Tópico', body: 'Escreva as anotações...' });
@@ -555,6 +565,7 @@
         }
 
         function removeCurrentSlide() {
+            if (!checkAccessBeforeAction()) return;
             if (currentMessage.slides.length <= 1) {
                 showModal("Aviso", "A mensagem precisa ter pelo menos um slide.");
                 return;
@@ -567,6 +578,7 @@
         }
 
         function adjustSlideFontSize(delta) {
+            if (!checkAccessBeforeAction()) return;
             currentSlideFontSize = Math.max(14, Math.min(40, currentSlideFontSize + delta));
             document.getElementById('slideBodyInput').style.fontSize = currentSlideFontSize + 'px';
             document.getElementById('slideFontSizeDisplay').textContent = currentSlideFontSize + 'px';
@@ -582,6 +594,7 @@
         }
 
         function saveCurrentMessage() {
+            if (!checkAccessBeforeAction()) return;
             updateSlideContent();
             if (!currentMessage.title.trim()) {
                 currentMessage.title = "Mensagem sem título";
@@ -606,6 +619,7 @@
         }
 
         function openNewMessageModal() {
+            if (!checkAccessBeforeAction()) return;
             currentMessage = {
                 id: 'msg_' + Date.now(),
                 title: 'Nova Mensagem',
@@ -630,6 +644,7 @@
         }
 
         function openSavedMessagesModal() {
+            if (!checkAccessBeforeAction()) return;
             const saved = getSavedMessages();
             const listEl = document.getElementById('savedMessagesList');
             listEl.innerHTML = '';
@@ -681,6 +696,7 @@
         }
 
         function exportCurrentMessage() {
+            if (!checkAccessBeforeAction()) return;
             updateSlideContent();
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentMessage, null, 2));
             const downloadAnchor = document.createElement('a');
@@ -692,6 +708,7 @@
         }
 
         function triggerImportMessage() {
+            if (!checkAccessBeforeAction()) return;
             document.getElementById('importFile').click();
         }
 
@@ -730,7 +747,6 @@
             document.getElementById('customModal').classList.add('hidden');
         }
 
-// --- FUNÇÃO BOTÃO SAIR ---
         function exitApp() {
             if (confirm("Deseja realmente sair e fechar o aplicativo?")) {
                 window.close();
@@ -739,9 +755,6 @@
                 }, 300);
             }
         }
-
-        
     </script>
 </body>
 </html>
-```
